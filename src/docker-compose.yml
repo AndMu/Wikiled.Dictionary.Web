@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  wikiled.dictionary.web:
+    image: wikiled.dictionary.web
+    build:
+      context: ./Wikiled.Dictionary.Web
+      dockerfile: Dockerfile
