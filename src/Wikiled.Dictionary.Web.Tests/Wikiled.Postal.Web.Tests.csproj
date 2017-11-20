@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>Wikiled.Dictionary.Web.Tests</AssemblyName>
+    <RootNamespace>Wikiled.Dictionary.Web.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <packagereference Include="Microsoft.NET.Test.Sdk" Version="15.3.0"></packagereference>
+    <PackageReference Include="NUnit" Version="3.8.1" />
+    <packagereference Include="NUnit3TestAdapter" Version="3.9.0"></packagereference>
+  </ItemGroup>
+
+</Project>
