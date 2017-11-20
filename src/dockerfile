@@ -1,0 +1,14 @@
+FROM microsoft/aspnetcore-build:latest AS build
+
+WORKDIR /code
+
+COPY Wikiled.Dictionary.Web .
+RUN dotnet publish --output /output --configuration Release
+
+FROM microsoft/aspnetcore:latest
+
+COPY --from=build /output /app
+
+WORKDIR /app
+
+ENTRYPOINT [ "dotnet", "Wikiled.Dictionary.Web.dll" ]

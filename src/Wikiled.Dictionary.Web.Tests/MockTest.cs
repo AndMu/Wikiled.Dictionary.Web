@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Wikiled.Postal.Web.Tests
+namespace Wikiled.Dictionary.Web.Tests
 {
     [TestFixture]
     public class MockTest
