@@ -6,7 +6,7 @@
     <ProjectGuid>a5ece934-e76d-45e2-9e78-0ec4b3525b41</ProjectGuid>
     <DockerLaunchBrowser>True</DockerLaunchBrowser>
     <DockerServiceUrl>http://{ServiceIPAddress}/api/values</DockerServiceUrl>
-    <DockerServiceName>wikiled.dictionary.web</DockerServiceName>
+    <DockerServiceName>dictionary.web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">

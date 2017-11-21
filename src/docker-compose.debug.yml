@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  dictionary.web:    
+    build:
+      context: .
+      dockerfile: Dockerfile.debug
+    ports:
+      - "80:80"
+    environment:
+      - REMOTE_DEBUGGING
