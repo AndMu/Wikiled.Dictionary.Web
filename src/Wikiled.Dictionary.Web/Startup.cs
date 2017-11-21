@@ -1,5 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Net.Http;
 using System.Reflection;
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using Wikiled.Core.Standard.Api.Client;
+using Wikiled.Dictionary.Logic;
 
 namespace Wikiled.Dictionary.Web
 {
@@ -32,9 +38,22 @@ namespace Wikiled.Dictionary.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddMemoryCache();
+            var builder = new ContainerBuilder();
+            builder.Register(ctx =>
+                       {
+                           var serviceClient = new HttpClient();
+                           serviceClient.BaseAddress = new Uri("http://api.wikiled.com");
+                           return new ApiClientFactory(serviceClient, serviceClient.BaseAddress);
+                       })
+                   .As<IApiClientFactory>();
+            builder.RegisterType<DictionaryManager>()
+                   .As<IDictionaryManager>();
+            var appContainer = builder.Build();
+            return new AutofacServiceProvider(appContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,7 +63,6 @@ namespace Wikiled.Dictionary.Web
             ILoggerFactory loggerFactory)
         {
             loggerFactory.AddNLog();
-
             app.Use(
                 async (context, next) =>
                 {
