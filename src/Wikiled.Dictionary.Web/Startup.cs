@@ -38,22 +38,23 @@ namespace Wikiled.Dictionary.Web
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
             services.AddMemoryCache();
-            var builder = new ContainerBuilder();
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
             builder.Register(ctx =>
-                       {
-                           var serviceClient = new HttpClient();
-                           serviceClient.BaseAddress = new Uri("http://api.wikiled.com");
-                           return new ApiClientFactory(serviceClient, serviceClient.BaseAddress);
-                       })
+                   {
+                       var serviceClient = new HttpClient();
+                       serviceClient.BaseAddress = new Uri("http://api.wikiled.com");
+                       return new ApiClientFactory(serviceClient, serviceClient.BaseAddress);
+                   })
                    .As<IApiClientFactory>();
             builder.RegisterType<DictionaryManager>()
                    .As<IDictionaryManager>();
-            var appContainer = builder.Build();
-            return new AutofacServiceProvider(appContainer);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

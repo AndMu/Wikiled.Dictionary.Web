@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace Wikiled.Dictionary.Web
@@ -12,7 +13,8 @@ namespace Wikiled.Dictionary.Web
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .Build();
+                   .UseStartup<Startup>()
+                   .ConfigureServices(services => services.AddAutofac())
+                   .Build();
     }
 }

@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
-export class PostalService {
+export class LocalService {
   constructor(private http: HttpClient) {
   }
 
-  public getLanguages(): Observable<string> {
-    return this.http.get<string>(`api/languages`);
+  public getLanguages(): Observable<string[]> {
+      return this.http.get<string[]>(`api/dictionary/languages`);
   }
 }
 
