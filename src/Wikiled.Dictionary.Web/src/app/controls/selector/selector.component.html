@@ -3,14 +3,14 @@
     <div class="col-5">
       <label [for]="from">From:</label>
       <kendo-autocomplete #from [data]="languages"                          
-                          [value]="toLanguage"
+                          [value]="to"
                           [placeholder]="'Search Language...'" >
       </kendo-autocomplete>
     </div>
     <div class="col-5">
       <label [for]="from">To:</label>
       <kendo-autocomplete #to [data]="languages"                          
-                          [value]="fromLanguage"
+                          [value]="from"
                           [placeholder]="'Search Language...'">
       </kendo-autocomplete>
     </div>
