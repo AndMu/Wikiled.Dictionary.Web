@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LocalService } from '../../service/local.service';
 
 @Component({
@@ -7,7 +7,7 @@ import { LocalService } from '../../service/local.service';
     templateUrl: './selector.component.html',
     styleUrls: ['./selector.component.css']
 })
-export class SelectorComponent {
+export class SelectorComponent implements OnInit {
 
     public languages: string[];
 
