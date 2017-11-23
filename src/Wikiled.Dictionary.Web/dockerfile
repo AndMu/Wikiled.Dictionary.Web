@@ -1,4 +1,4 @@
-FROM microsoft/aspnetcore-build:latest AS builder
+FROM microsoft/aspnetcore-build:2.0.3 AS builder
 WORKDIR /source
 
 COPY *.csproj .
@@ -9,7 +9,7 @@ COPY . .
 RUN dotnet publish --output /app/ --configuration Release
 
 # Stage 2
-FROM microsoft/aspnetcore:latest
+FROM microsoft/aspnetcore:2.0.3
 WORKDIR /app
 COPY --from=builder /app .
 ENTRYPOINT ["dotnet", "Wikiled.Dictionary.Web.dll"]
