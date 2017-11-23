@@ -13,10 +13,10 @@ export class SelectorComponent implements OnInit {
     public languages: string[];
 
     @Output()
-    public to: string;
+    public toLanguage: string;
 
     @Output()
-    public from: string;
+    public fromLanguage: string;
 
     constructor(private dataService: LocalService) {
     }

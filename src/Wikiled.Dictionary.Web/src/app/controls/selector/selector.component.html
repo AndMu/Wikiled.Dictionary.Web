@@ -1,20 +1,22 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-5">
-      <label [for]="from">From:</label>
+    <div class="col-xs-12 col-sm-5 from">
+      <label [for]="from">From: </label>
       <kendo-autocomplete #from [data]="languages"                          
-                          [value]="to"
-                          [placeholder]="'Search Language...'" >
+                          class="search"
+                          [value]="toLanguage"
+                          [placeholder]="'Language...'" >
       </kendo-autocomplete>
     </div>
-    <div class="col-5">
-      <label [for]="from">To:</label>
-      <kendo-autocomplete #to [data]="languages"                          
-                          [value]="from"
-                          [placeholder]="'Search Language...'">
+    <div class="col-xs-12 col-sm-5 to">
+      <label [for]="from">To: </label>
+      <kendo-autocomplete #to [data]="languages"       
+                          class="search"
+                          [value]="fromLanguage"
+                          [placeholder]="'Language...'">
       </kendo-autocomplete>
     </div>
-    <div class="col-2">
+    <div class="col-xs-12">
       <button kendoButton [primary]="true" (click)="onSearchClick()">Translate</button>
     </div>
   </div>

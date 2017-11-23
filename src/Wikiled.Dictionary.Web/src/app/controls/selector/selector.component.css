@@ -1,0 +1,11 @@
+.search .from {
+  Text-align: left;
+}
+
+.search .to {
+  Text-align: right;
+}
+
+.search{
+  max-width: 150px;
+}
