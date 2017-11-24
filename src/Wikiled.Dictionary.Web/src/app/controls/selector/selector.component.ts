@@ -23,8 +23,12 @@ export class SelectorComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.fromLanguage = this.route.snapshot.paramMap.get('from');
-        this.toLanguage = this.route.snapshot.paramMap.get('to');
+        this.route.paramMap.subscribe(
+            item => {
+                this.fromLanguage = item.get('from');
+                this.toLanguage = item.get('to');
+            });
+
         this.dataService
         .getLanguages()
         .subscribe((data) => this.languages = data);
