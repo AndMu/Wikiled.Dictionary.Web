@@ -9,20 +9,19 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { LabelModule } from '@progress/kendo-angular-label';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DialogModule } from '@progress/kendo-angular-dialog';
-import { AppComponent } from './app.component';
 import { PanelBarModule } from '@progress/kendo-angular-layout';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RouterModule } from '@angular/router';
 import {
     MatButtonModule, MatCheckboxModule, MatInputModule, MatAutocompleteModule, MatProgressSpinnerModule
 } from '@angular/material';
 import { AngularWebStorageModule } from 'angular-web-storage';
-
-// Import the Animations module
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-
-// Import the ButtonsModule
 import 'hammerjs';
+import { AppComponent } from './app.component';
+import { RoutedComponent } from './routed.app.component';
+import { DictionaryAppRoutes } from './routes';
 import { AppNavbarComponent } from './controls/navbar/navbar.component';
 import { SelectorComponent } from './controls/selector/selector.component';
 
@@ -31,7 +30,8 @@ import { SelectorComponent } from './controls/selector/selector.component';
     declarations: [
         AppComponent,
         SelectorComponent,
-        AppNavbarComponent
+        AppNavbarComponent,
+        RoutedComponent
     ],
     imports: [
         AngularWebStorageModule,
@@ -53,9 +53,10 @@ import { SelectorComponent } from './controls/selector/selector.component';
         MatCheckboxModule,
         ButtonsModule,
         InputsModule,
-        NgbModule.forRoot()
+        NgbModule.forRoot(),
+        RouterModule.forRoot(DictionaryAppRoutes)
     ],
     providers: [],
-    bootstrap: [AppComponent]
+    bootstrap: [RoutedComponent]
 })
 export class AppModule { }

@@ -64,19 +64,6 @@ namespace Wikiled.Dictionary.Web
             ILoggerFactory loggerFactory)
         {
             loggerFactory.AddNLog();
-            app.Use(
-                async (context, next) =>
-                {
-                    await next().ConfigureAwait(false);
-                    if (context.Response.StatusCode == 404 &&
-                        !Path.HasExtension(context.Request.Path.Value) &&
-                        !context.Request.Path.Value.StartsWith("/api/"))
-                    {
-                        context.Request.Path = "/index.html";
-                        await next().ConfigureAwait(false);
-                    }
-                });
-
             app.UseMvcWithDefaultRoute();
             app.UseDefaultFiles();
             app.UseStaticFiles();
