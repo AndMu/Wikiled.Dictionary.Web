@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { Observable } from 'rxjs/Observable';
+import { ActivatedRoute } from '@angular/router';
 
 import { SelectorComponent } from './selector.component';
 import { LocalService } from '../../service/local.service';
@@ -21,7 +22,15 @@ describe('SelectorComponent', () => {
           imports: [HttpClientModule, HttpClientTestingModule, FormsModule, ReactiveFormsModule ],
           declarations: [SelectorComponent],
           schemas: [NO_ERRORS_SCHEMA],
-          providers: [LocalService]
+          providers: [
+            LocalService,
+            {
+                provide: ActivatedRoute,
+                useValue: {
+                   paramMap: Observable.of({ get: (key) => 'value' })
+                }
+              }
+            ]
       });
 
       fixture = TestBed.createComponent(SelectorComponent);
