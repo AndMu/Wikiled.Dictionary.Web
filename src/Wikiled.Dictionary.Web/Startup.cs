@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
 using Autofac;
-using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -28,6 +29,7 @@ namespace Wikiled.Dictionary.Web
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+           
             Configuration = builder.Build();
             env.ConfigureNLog("nlog.config");
             LogManager.Configuration.Variables["logDirectory"] =
@@ -64,9 +66,20 @@ namespace Wikiled.Dictionary.Web
             ILoggerFactory loggerFactory)
         {
             loggerFactory.AddNLog();
-            app.UseMvcWithDefaultRoute();
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+
+            app.Use(async (context, next) =>
+                   {
+                       await next().ConfigureAwait(false);
+                       if (context.Response.StatusCode == 404 && !Path.HasExtension(context.Request.Path.Value))
+                       {
+                           context.Request.Path = "/index.html";
+                           await next().ConfigureAwait(false);
+                       }
+                   })
+               .UseDefaultFiles(new DefaultFilesOptions { DefaultFileNames = new List<string> { "index.html" } })
+               .UseStaticFiles()
+               .UseMvc();
+
             app.AddNLogWeb();
         }
     }

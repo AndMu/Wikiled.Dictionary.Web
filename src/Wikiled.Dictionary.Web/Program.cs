@@ -11,10 +11,13 @@ namespace Wikiled.Dictionary.Web
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                   .UseStartup<Startup>()
-                   .ConfigureServices(services => services.AddAutofac())
-                   .Build();
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            var builder = WebHost.CreateDefaultBuilder(args)
+                                 .UseStartup<Startup>()
+                                 .ConfigureServices(services => services.AddAutofac());
+
+            return builder.Build();
+        }
     }
 }
