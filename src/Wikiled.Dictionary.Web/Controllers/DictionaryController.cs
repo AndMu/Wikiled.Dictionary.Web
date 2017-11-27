@@ -30,59 +30,47 @@ namespace Wikiled.Dictionary.Web.Controllers
             this.cache = cache;
         }
 
-        // GET api/values
         [HttpGet]
         [Route("Languages")]
         public IEnumerable<string> GetLanguages()
         {
-            if (!cache.TryGetValue(languageKey, out var value) ||
-                !(value is string[]))
-            {
-                logger.Debug("GetLanguages");
-                value = Enum.GetNames(typeof(Language));
-                var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(30));
-                cache.Set(languageKey, value, cacheEntryOptions);
-            }
-
-            return (string[])value;
+            return cache.GetOrCreate(
+                languageKey,
+                entry =>
+                    {
+                        entry.SlidingExpiration = TimeSpan.FromMinutes(30);
+                        logger.Debug("GetLanguages");
+                        return Enum.GetNames(typeof(Language));
+                    });
         }
 
         [HttpGet("{from}/{to}/{word}")]
-        public async Task<TranslationResult> Translate(Language from, Language to, string word)
+        public Task<TranslationResult> Translate(Language from, Language to, string word)
         {
             string key = $"{from}:{to}:{word}";
-            if (!cache.TryGetValue(key, out var value) ||
-                !(value is TranslationResult))
+            return cache.GetOrCreateAsync(key, entry => TranslateInternal(@from, to, word, key));
+        }
+
+        private async Task<TranslationResult> TranslateInternal(Language @from, Language to, string word, string key)
+        {
+            logger.Debug("Translate: {0}", key);
+            try
             {
-                logger.Debug("Translate: {0}", key);
-                try
+                 var request = new TranslationRequest { From = @from, To = to, Word = word };
+                var result = await manager.Translate(request, CancellationToken.None).ConfigureAwait(false);
+                if (!result.IsSuccess)
                 {
-                    var request = new TranslationRequest { From = @from, To = to, Word = word };
-                    var result = await manager.Translate(request, CancellationToken.None).ConfigureAwait(false);
-                    if (result.IsSuccess)
-                    {
-                        var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(30));
-                        cache.Set(key, result.Data.Result, cacheEntryOptions);
-                    }
-                    else
-                    {
-                        logger.Error("Operation failed: {0}", result.ErrorMessage);
-                        return new TranslationResult
-                        {
-                            Request = request,
-                            Translations = new string[] { }
-                        };
+                    logger.Error("Operation failed: {0}", result.ErrorMessage);
+                    return new TranslationResult { Request = request, Translations = new string[] { } };
+                }
 
-                    }
-                }
-                catch (Exception e)
-                {
-                    logger.Error(e);
-                    throw;
-                }
+                return result.Data.Result;
             }
-
-            return (TranslationResult)value;
+            catch (Exception e)
+            {
+                logger.Error(e);
+                throw;
+            }
         }
     }
 }
