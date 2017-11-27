@@ -1,11 +1,12 @@
-.search .from {
-  Text-align: left;
+.fromlan {
+  text-align: right;
 }
 
-.search .to {
-  Text-align: right;
+.tolan {
+  text-align: left;
 }
 
-.search{
-  max-width: 150px;
+.input {
+  padding: 10px 10px 10px 10px;
+  text-align: center;
 }

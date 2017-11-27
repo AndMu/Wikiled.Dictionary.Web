@@ -14,6 +14,9 @@ export class SelectorComponent implements OnInit {
     public languages: string[];
 
     @Output()
+    public selectedWord: string;
+
+    @Output()
     public toLanguage: string;
 
     @Output()
@@ -27,6 +30,7 @@ export class SelectorComponent implements OnInit {
             item => {
                 this.fromLanguage = item.get('from');
                 this.toLanguage = item.get('to');
+                this.selectedWord = item.get('word');
             });
 
         this.dataService
