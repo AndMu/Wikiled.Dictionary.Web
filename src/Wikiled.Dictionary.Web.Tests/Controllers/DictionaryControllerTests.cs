@@ -1,5 +1,5 @@
 using System;
-using Microsoft.Extensions.Caching.Memory;
+using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Wikiled.Dictionary.Logic;
@@ -14,21 +14,30 @@ namespace Wikiled.Dictionary.Web.Tests.Controllers
 
         private Mock<IDictionaryManager> mockDictionaryManager;
 
-        private Mock<IMemoryCache> mockMemoryCache;
+        private CacheHelper cacheHelper;
 
         [SetUp]
         public void SetUp()
         {
             mockDictionaryManager = new Mock<IDictionaryManager>();
-            mockMemoryCache = new Mock<IMemoryCache>();
+            cacheHelper = new CacheHelper();
             instance = CreateDictionaryController();
+        }
+
+        [Test]
+        public void GetLanguages()
+        {
+            var languages = instance.GetLanguages().ToArray();
+            Assert.AreEqual(37, languages.Length);
+            object value;
+            cacheHelper.MemoryCache.Verify(item => item.TryGetValue("Languages", out value));
         }
 
         [Test]
         public void Construct()
         {
             Assert.Throws<ArgumentNullException>(
-                () => new DictionaryController(null, mockMemoryCache.Object));
+                () => new DictionaryController(null, cacheHelper.MemoryCache.Object));
             Assert.Throws<ArgumentNullException>(
                 () => new DictionaryController(mockDictionaryManager.Object, null));
             Assert.IsNotNull(instance);
@@ -36,7 +45,7 @@ namespace Wikiled.Dictionary.Web.Tests.Controllers
 
         private DictionaryController CreateDictionaryController()
         {
-            return new DictionaryController(mockDictionaryManager.Object, mockMemoryCache.Object);
+            return new DictionaryController(mockDictionaryManager.Object, cacheHelper.MemoryCache.Object);
         }
     }
 }
