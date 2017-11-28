@@ -24,6 +24,7 @@ import { RoutedComponent } from './routed.app.component';
 import { DictionaryAppRoutes } from './routes';
 import { AppNavbarComponent } from './controls/navbar/navbar.component';
 import { SelectorComponent } from './controls/selector/selector.component';
+import { ResultsComponent } from './controls/results/results.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { SelectorComponent } from './controls/selector/selector.component';
         AppComponent,
         SelectorComponent,
         AppNavbarComponent,
-        RoutedComponent
+        RoutedComponent,
+        ResultsComponent
     ],
     imports: [
         AngularWebStorageModule,

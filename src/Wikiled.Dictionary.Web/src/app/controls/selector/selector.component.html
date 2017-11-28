@@ -2,30 +2,34 @@
   <div class="row">
     <div class="col-xs-12 col-sm-6 fromlan">
       <label [for]="from">From: </label>
-      <kendo-autocomplete #from [data]="languages"                          
+      <kendo-autocomplete #from id="from"
+                          [data]="languages"                          
                           class="search"
                           [value]="fromLanguage"
+                          (valueChange)="onValueChange($event)"
                           [placeholder]="'Language...'" >
       </kendo-autocomplete>
     </div>
     <div class="col-xs-12 col-sm-6 tolan">
       <label [for]="from">To: </label>
-      <kendo-autocomplete #to [data]="languages"       
+      <kendo-autocomplete #to id="to"
+                          [data]="languages"       
                           class="search"
                           [value]="toLanguage"
+                          (valueChange)="onValueChange($event)"
                           [placeholder]="'Language...'">
       </kendo-autocomplete>
     </div>
   </div>
   <div class="input">
-    <label [for]="autocomplete">Word:</label>
-    <kendo-autocomplete #autocomplete
+    <label [for]="word">Word:</label>
+    <kendo-autocomplete #word id="word"
                         required
                         [filterable]="true"
+                        (valueChange)="onValueChange($event)"
                         [placeholder]="'e.g. Translation'"
                         [value]="selectedWord">
     </kendo-autocomplete>
-    <button kendoButton [primary]="true" (click)="onSearchClick()">Query</button>
-
+    <button kendoButton [disabled]="isInvalid" [primary]="true" (click)="onSearchClick()">Query</button>
   </div>
 </div>
