@@ -97,7 +97,13 @@ describe('SelectorComponent',
                 expect(el.value).toBe('two');
 
                 el.value = 'someValue';
-                el.dispatchEvent(new Event('valueChange'));
+                // el.dispatchEvent(new CustomEvent('valueChange', { 'detail': 'value' }));
+                const event = new KeyboardEvent('keypress',
+                {
+                    'code': 'Enter',
+                });
+                fixture.nativeElement.dispatchEvent(event);
+
                 fixture.detectChanges();
                 fixture.whenStable().then(() => {
                     expect(component.isInvalid).toBe(false);
