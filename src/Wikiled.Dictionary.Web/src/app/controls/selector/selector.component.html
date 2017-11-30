@@ -1,22 +1,21 @@
-<div class="container-fluid">
+<form class="container-fluid" (ngSubmit)="onSearch()" [formGroup]="form">
   <div class="row">
     <div class="col-xs-12 col-sm-6 fromlan">
+
       <label [for]="from">From: </label>
       <kendo-autocomplete #from id="from"
-                          [data]="languages"                          
+                          [data]="languages"
                           class="search"
-                          [value]="fromLanguage"
-                          (valueChange)="onValueChange($event)"
-                          [placeholder]="'Language...'" >
+                          name="from" formControlName="from"
+                          [placeholder]="'Language...'">
       </kendo-autocomplete>
     </div>
     <div class="col-xs-12 col-sm-6 tolan">
       <label [for]="from">To: </label>
       <kendo-autocomplete #to id="to"
-                          [data]="languages"       
+                          [data]="languages"
                           class="search"
-                          [value]="toLanguage"
-                          (valueChange)="onValueChange($event)"
+                          name="to" formControlName="to"
                           [placeholder]="'Language...'">
       </kendo-autocomplete>
     </div>
@@ -26,10 +25,10 @@
     <kendo-autocomplete #word id="word"
                         required
                         [filterable]="true"
-                        (valueChange)="onValueChange($event)"
                         [placeholder]="'e.g. Translation'"
-                        [value]="selectedWord">
+                        name="word" formControlName="word">
     </kendo-autocomplete>
-    <button kendoButton [disabled]="isInvalid" [primary]="true" (click)="onSearchClick()">Query</button>
+    <button kendoButton [primary]="true" [disabled]="form.invalid">Query</button>
   </div>
-</div>
+</form>
+

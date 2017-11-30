@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { LocalService } from '../../service/local.service';
 
 @Component({
@@ -8,8 +8,12 @@ import { LocalService } from '../../service/local.service';
     styleUrls: ['./results.component.css']
 })
 
-export class ResultsComponent {
+export class ResultsComponent implements OnInit  {
 
     @Input()
-    public words: string;
+    public words: string[];
+
+    ngOnInit() {
+        this.words = [];
+    }
 }

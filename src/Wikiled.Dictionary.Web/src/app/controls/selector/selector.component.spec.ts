@@ -1,3 +1,4 @@
+import { element } from 'protractor/built';
 import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -89,24 +90,19 @@ describe('SelectorComponent',
         fakeAsync(() => {
             fixture.detectChanges();
             tick();
-            expect(component.isInvalid).toBe(true);
+            expect(component.isInvalid).toBe(false);
             fixture.whenStable().then(() => {
                 const input = fixture.debugElement.query(By.css('#to'));
-                const el = input.nativeElement;
+                const intputElement = input.nativeElement;
 
-                expect(el.value).toBe('two');
-
-                el.value = 'someValue';
-                // el.dispatchEvent(new CustomEvent('valueChange', { 'detail': 'value' }));
-                const event = new KeyboardEvent('keypress',
-                {
-                    'code': 'Enter',
-                });
-                fixture.nativeElement.dispatchEvent(event);
-
+                expect(intputElement.value).toBe('two');
+                intputElement.value = 'x';
+                intputElement.dispatchEvent(new Event('input'));
+                tick();
                 fixture.detectChanges();
+                // input.triggerEventHandler('valueChange', 'x');
                 fixture.whenStable().then(() => {
-                    expect(component.isInvalid).toBe(false);
+                    expect(component.isInvalid).toBe(true);
                 });
               });
     }));
