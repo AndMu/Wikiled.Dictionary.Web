@@ -1,23 +1,20 @@
 <form class="container-fluid" (ngSubmit)="onSearch()" [formGroup]="form">
   <div class="row">
     <div class="col-xs-12 col-sm-6 fromlan">
-
-      <label [for]="from">From: </label>
-      <kendo-autocomplete #from id="from"
-                          [data]="languages"
-                          class="search"
-                          name="from" formControlName="from"
-                          [placeholder]="'Language...'">
-      </kendo-autocomplete>
+      <label [for]="from">From: </label>        
+      <kendo-dropdownlist #from id="from"
+                          [data]="languages"                          
+                          [filterable]="true"
+                          name="from" formControlName="from" >
+      </kendo-dropdownlist >
     </div>
     <div class="col-xs-12 col-sm-6 tolan">
-      <label [for]="from">To: </label>
-      <kendo-autocomplete #to id="to"
-                          [data]="languages"
-                          class="search"
-                          name="to" formControlName="to"
-                          [placeholder]="'Language...'">
-      </kendo-autocomplete>
+      <label [for]="to">To: </label>      
+      <kendo-dropdownlist #to id="to"
+                          [data]="languages"                                                    
+                          [filterable]="true"                          
+                          name="to" formControlName="to" >
+                    </kendo-dropdownlist >
     </div>
   </div>
   <div class="input">

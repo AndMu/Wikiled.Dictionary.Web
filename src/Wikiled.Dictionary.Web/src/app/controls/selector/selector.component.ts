@@ -1,7 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder, ValidatorFn } from '@angular/forms';
 import { LocalService } from '../../service/local.service';
 import { TranslationRequest } from '../../service/translation.request';
+import { LoggingService } from '../../helpers/logging.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -13,56 +14,93 @@ import { ActivatedRoute } from '@angular/router';
 
 export class SelectorComponent implements OnInit {
 
-    public form: FormGroup;
+    public languages = [];
 
-    public languages: string[];
+    form: FormGroup;
+
+    languagesTable: Map<string, string>;
+
+    routeFrom: string;
+
+    routeTo: string;
+
+    private logger = new LoggingService();
 
     @Output()
     public onSelected = new EventEmitter<TranslationRequest>();
+    constructor(
+        private fb: FormBuilder,
+        private route: ActivatedRoute,
+        private dataService: LocalService) {
 
-    private languagesLower: string[];
-
-    constructor(private fb: FormBuilder, private route: ActivatedRoute, private dataService: LocalService) {
+            this.languagesTable = new Map<string, string>();
+            this.form = this.fb.group({
+                from: ['', [Validators.required]],
+                to: ['', [Validators.required]],
+                word: ['', [Validators.required]],
+            });
     }
 
-    get fromLanguage() { return this.form.get('from'); }
+    get fromLanguage() { return this.form.get('from').value; }
 
-    get toLanguage() { return this.form.get('to'); }
+    get toLanguage() { return this.form.get('to').value; }
 
-    get selectedWord() { return this.form.get('word'); }
+    get selectedWord() { return this.form.get('word').value; }
 
     ngOnInit() {
-        this.languagesLower = [];
-        this.form = this.fb.group({
-            from: ['', [Validators.required, this.isValidList]],
-            to: ['', [Validators.required]],
-            word: ['', [Validators.required]],
-        });
 
-        this.route.paramMap.subscribe(
-            item => {
-                this.form.controls['from'].setValue(item.get('from'));
-                this.form.controls['to'].setValue(item.get('to'));
-                this.form.controls['word'].setValue(item.get('word'));
-            });
+        this.route.paramMap
+                   .subscribe(params =>
+                        this.selectParms(
+                            params.get('from'),
+                            params.get('to'),
+                            params.get('word')));
 
         this.dataService
             .getLanguages()
-            .subscribe((data) => {
-                this.languages = data;
-                this.languagesLower = data.map(item => item.toLocaleLowerCase());
-            });
+            .subscribe(data => this.receivedLanguages(data));
     }
 
     public onSearch() {
         const item = new TranslationRequest();
-        // item.from = this.fromLanguage;
-        // item.to = this.toLanguage;
-        // item.word = this.selectedWord;
+        item.from = this.fromLanguage;
+        item.to = this.toLanguage;
+        item.word = this.selectedWord;
         this.onSelected.emit(item);
     }
 
-    private isValidList(input: FormControl) {
-        return this.languagesLower != null && this.languagesLower.length > 0 && this.languagesLower.includes(input.value);
-      }
+    private selectParms(from: string, to: string, word: string) {
+        this.routeFrom = from;
+        this.routeTo = to;
+        this.form.controls['word'].setValue(word);
+        this.setDropDown();
+    }
+
+    private receivedLanguages(languages: string[]) {
+        this.languagesTable = new Map<string, string>();
+        this.languages = languages;
+        languages.forEach((prop) => { this.languagesTable[prop.toLocaleLowerCase()] = prop; });
+        this.setDropDown();
+    }
+
+    private setDropDown() {
+        if (this.languages.length === 0) {
+            this.logger.log('Languages not received yet');
+            return;
+        }
+
+        let from = 'English';
+        let to = 'Spanish';
+        if (this.routeFrom != null) {
+            from = this.languagesTable[this.routeFrom.toLocaleLowerCase()];
+        }
+
+        if (this.routeTo != null) {
+            to = this.languagesTable[this.routeTo.toLocaleLowerCase()];
+        }
+
+        this.form.controls['from'].setValue(from);
+        this.form.controls['to'].setValue(to);
+    }
 }
+
