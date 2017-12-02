@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { LocalService } from '../../service/local.service';
+import { TranslationResult } from '../../service/translation.result';
 
 @Component({
     selector: 'app-results',
@@ -11,9 +12,8 @@ import { LocalService } from '../../service/local.service';
 export class ResultsComponent implements OnInit  {
 
     @Input()
-    public words: string[];
+    public results: TranslationResult;
 
     ngOnInit() {
-        this.words = [];
     }
 }

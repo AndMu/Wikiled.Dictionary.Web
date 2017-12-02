@@ -1,4 +1,5 @@
 import { element } from 'protractor/built';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { TestBed, async, ComponentFixture, fakeAsync, tick } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +23,7 @@ describe('SelectorComponent',
 
         beforeEach(() => {
             TestBed.configureTestingModule({
-                imports: [HttpClientModule, HttpClientTestingModule, FormsModule, ReactiveFormsModule],
+                imports: [HttpClientModule, HttpClientTestingModule, FormsModule, ReactiveFormsModule, DropDownsModule],
                 declarations: [SelectorComponent],
                 schemas: [NO_ERRORS_SCHEMA],
                 providers: [
@@ -60,40 +61,42 @@ describe('SelectorComponent',
             }));
 
         it('Retrieve languages',
-            fakeAsync(() => {
+            async(() => {
+                const userForm = fixture.componentInstance.form;
                 expect(component.form.valid).toBe(false);
                 fixture.detectChanges();
-                tick();
+                expect(userForm.value).toEqual({ word: 'word', from: 'one', to: 'two' });
                 expect(component.languages.length).toBe(2);
                 expect(component.form.valid).toBe(true);
             }));
 
-        it('Can not with wrong language',
-        fakeAsync(() => {
-            //myhash['to'] = 'xxx';
-            //fixture.detectChanges();
-            //tick();
-            //expect(component.isInvalid).toBe(true);
-        }));
+        it('Cannot with wrong language to',
+            async(() => {
+                myhash['to'] = 'xxx';
+                fixture.detectChanges();
+                expect(component.form.valid).toBe(false);
+            }));
 
-        it('Change language',
-        fakeAsync(() => {
-            //fixture.detectChanges();
-            //tick();
-            //expect(component.isInvalid).toBe(false);
-            //fixture.whenStable().then(() => {
-            //    const input = fixture.debugElement.query(By.css('#to'));
-            //    const intputElement = input.nativeElement;
+        it('Cannot with wrong language from',
+            async(() => {
+                myhash['from'] = '';
+                fixture.detectChanges();
+                expect(component.form.valid).toBe(false);
+            }));
 
-            //    expect(intputElement.value).toBe('two');
-            //    intputElement.value = 'x';
-            //    intputElement.dispatchEvent(new Event('input'));
-            //    tick();
-            //    fixture.detectChanges();
-            //    // input.triggerEventHandler('valueChange', 'x');
-            //    fixture.whenStable().then(() => {
-            //        expect(component.isInvalid).toBe(true);
-            //    });
-            //  });
-    }));
-});
+        it('Cannot with empty word',
+            async(() => {
+                myhash['word'] = '';
+                fixture.detectChanges();
+                expect(component.form.valid).toBe(false);
+            }));
+
+        it('Set Empty Word',
+            fakeAsync(() => {
+                const form = fixture.componentInstance.form;
+                fixture.detectChanges();
+                expect(component.form.valid).toBe(true);
+                form.controls['word'].setValue('');
+                expect(component.form.valid).toBe(false);
+            }));
+    });

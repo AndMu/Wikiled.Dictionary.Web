@@ -4,6 +4,7 @@ import { LocalService } from '../../service/local.service';
 import { TranslationRequest } from '../../service/translation.request';
 import { LoggingService } from '../../helpers/logging.service';
 import { ActivatedRoute } from '@angular/router';
+import { TranslationResult } from '../../service/translation.result';
 
 @Component({
     selector: 'app-selector',
@@ -27,7 +28,8 @@ export class SelectorComponent implements OnInit {
     private logger = new LoggingService();
 
     @Output()
-    public onSelected = new EventEmitter<TranslationRequest>();
+    public onResult = new EventEmitter<TranslationResult>();
+
     constructor(
         private fb: FormBuilder,
         private route: ActivatedRoute,
@@ -41,11 +43,11 @@ export class SelectorComponent implements OnInit {
             });
     }
 
-    get fromLanguage() { return this.form.get('from').value; }
-
     get toLanguage() { return this.form.get('to').value; }
 
     get selectedWord() { return this.form.get('word').value; }
+
+    get fromLanguage() { return this.form.get('from').value; }
 
     ngOnInit() {
 
@@ -62,11 +64,15 @@ export class SelectorComponent implements OnInit {
     }
 
     public onSearch() {
+        this.logger.log('onSearch');
         const item = new TranslationRequest();
         item.from = this.fromLanguage;
         item.to = this.toLanguage;
         item.word = this.selectedWord;
-        this.onSelected.emit(item);
+        this.dataService.getTranslation(item).subscribe(result => {
+            this.logger.log('onSearch - received');
+            this.onResult.emit(result);
+        });
     }
 
     private selectParms(from: string, to: string, word: string) {
@@ -89,6 +95,8 @@ export class SelectorComponent implements OnInit {
             return;
         }
 
+        this.logger.log('Setting dropdown');
+
         let from = 'English';
         let to = 'Spanish';
         if (this.routeFrom != null) {
@@ -99,8 +107,8 @@ export class SelectorComponent implements OnInit {
             to = this.languagesTable[this.routeTo.toLocaleLowerCase()];
         }
 
-        this.form.controls['from'].setValue(from);
         this.form.controls['to'].setValue(to);
+        this.form.controls['from'].setValue(from);
     }
 }
 

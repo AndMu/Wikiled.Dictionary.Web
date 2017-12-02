@@ -11,8 +11,8 @@
     <div class="col-md-2">
     </div>
     <div class="col-md-8">
-      <app-selector></app-selector>
-      <app-results words="'words'"></app-results>
+      <app-selector (onResult)="onResult($event)"></app-selector>
+      <app-results [results]="results"></app-results>
     </div>
     <div class="col-md-2">
     </div>

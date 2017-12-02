@@ -48,6 +48,7 @@ namespace Wikiled.Dictionary.Web.Controllers
         public Task<TranslationResult> Translate(Language from, Language to, string word)
         {
             string key = $"{from}:{to}:{word}";
+            logger.Debug("Translate: {0}", key);
             return cache.GetOrCreateAsync(key, entry => TranslateInternal(@from, to, word, key));
         }
 
