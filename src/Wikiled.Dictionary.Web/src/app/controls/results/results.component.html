@@ -4,7 +4,7 @@
     </div>
     <div class="col-xs-12 col-sm-10">
       <div class="list-group" *ngFor="let word of results?.translations">
-        <a href="#" class="list-group-item list-group-item-action">{{word}}</a>
+        <a [routerLink]="['', results.request.to, results.request.from, word]" class="list-group-item list-group-item-action">{{word}}</a>
       </div>
     </div>
     <div class="col-xs-12 col-sm-2">

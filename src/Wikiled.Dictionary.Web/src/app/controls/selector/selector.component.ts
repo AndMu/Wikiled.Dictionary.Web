@@ -65,12 +65,17 @@ export class SelectorComponent implements OnInit {
 
     public onSearch() {
         this.logger.log('onSearch');
+        this.search(this.fromLanguage, this.toLanguage, this.selectedWord);
+    }
+
+    public search(from: string, to: string, word: string) {
+        this.logger.log(`search: ${from}-${to}:${word}`);
         const item = new TranslationRequest();
-        item.from = this.fromLanguage;
-        item.to = this.toLanguage;
-        item.word = this.selectedWord;
+        item.from = from;
+        item.to = to;
+        item.word = word;
         this.dataService.getTranslation(item).subscribe(result => {
-            this.logger.log('onSearch - received');
+            this.logger.log('search - received');
             this.onResult.emit(result);
         });
     }
@@ -80,6 +85,10 @@ export class SelectorComponent implements OnInit {
         this.routeTo = to;
         this.form.controls['word'].setValue(word);
         this.setDropDown();
+        if (from != null && to != null && word != null) {
+            this.logger.log('All initial arguments set. Searchings...');
+            this.search(from, to, word);
+        }
     }
 
     private receivedLanguages(languages: string[]) {
